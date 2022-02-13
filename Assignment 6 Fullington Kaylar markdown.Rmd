@@ -1,0 +1,172 @@
+---
+title: "Assignment: Assignment 6"
+author: Kaylar Fullington
+date: 2/6/2022
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(tinytex.verbose = TRUE)
+```
+
+## Set the working directory to the root of your DSC 520 directory
+setwd("C:/Users/runek/dsc520")
+
+## Load the `data/r4ds/heights.csv` to
+heights_df <- read.csv("data/r4ds/heights.csv")
+```{r echo = FALSE}
+heights_df <- read.csv("data/r4ds/heights.csv")
+```
+
+## Load the ggplot2 library
+library(ggplot2)
+```{r echo = FALSE}
+library(ggplot2)
+```
+
+## Fit a linear model using the `age` variable as the predictor and `earn` as the outcome
+age_lm <- lm(earn ~ age, data = heights_df)
+```{r echo = FALSE}
+age_lm <- lm(earn ~ age, data = heights_df)
+```
+
+## View the summary of your model using `summary()`
+summary(age_lm)
+```{r echo = FALSE}
+summary(age_lm)
+```
+
+## Creating predictions using `predict()`
+age_predict_df <- data.frame(earn = predict(age_lm, age_lm$earn), age = heights_df$age)
+```{r echo = FALSE}
+age_predict_df <- data.frame(earn = predict(age_lm, age_lm$earn), age = heights_df$age)
+```
+
+## Plot the predictions against the original data
+``` {r echo = FALSE}
+ggplot(data = age_lm, aes(y = earn, x = age)) +
+  geom_point(color='blue') +
+  geom_line(color='red', data = age_predict_df, aes(y = earn, x = age))
+```
+
+## Calculate the mean earnings
+mean_earn <- mean(heights_df$earn)
+```{r echo = FALSE}
+mean_earn <- mean(heights_df$earn)
+mean_earn
+```
+
+## Corrected Sum of Squares Total
+sst <- sum((mean_earn - heights_df$earn)^2)
+```{r echo = FALSE}
+sst <- sum((mean_earn - heights_df$earn)^2)
+sst
+```
+
+## Corrected Sum of Squares for Model
+ssm <- sum((mean_earn - age_predict_df$earn)^2)
+```{r echo = FALSE}
+ssm <- sum((mean_earn - age_predict_df$earn)^2)
+ssm
+```
+
+## Residuals
+residuals <- heights_df$earn - age_predict_df$earn
+```{r echo = FALSE}
+residuals <- heights_df$earn - age_predict_df$earn
+head(residuals)
+```
+
+## Sum of Squares for Error
+sse <- sum(residuals^2)
+```{r echo = FALSE}
+sse <- sum(residuals^2)
+sse
+```
+
+## R Squared
+r_squared <- ssm / sst
+```{r echo = FALSE}
+ssm <- sum((mean_earn - age_predict_df$earn)^2)
+sst <- sum((mean_earn - heights_df$earn)^2)
+r_squared <- ssm / sst
+r_squared
+```
+
+## Number of observations
+n <- nrow(heights_df)
+```{r echo = FALSE}
+n <- nrow(heights_df)
+n
+```
+
+## Number of regression parameters
+p <- 2
+```{r echo = FALSE}
+p <- 2
+p
+```
+
+## Corrected Degrees of Freedom for Model (p-1)
+dfm <- p - 1
+```{r echo = FALSE}
+dfm <- p - 1
+dfm
+```
+
+## Degrees of Freedom for Error (n-p)
+dfe <- n - p
+```{r echo = FALSE}
+dfe <- n - p
+dfe
+```
+
+## Corrected Degrees of Freedom Total:   DFT = n - 1
+dft <- n - 1
+```{r echo = FALSE}
+dft <- n - 1
+dft
+```
+
+## Mean of Squares for Model:   MSM = SSM / DFM
+msm <- ssm / dfm
+```{r echo = FALSE}
+msm <- ssm / dfm
+```
+
+## Mean of Squares for Error:   MSE = SSE / DFE
+mse <- sse / dfe
+``{r echo = FALSE}
+mse <- sse / dfe
+mse
+```
+
+## Mean of Squares Total:   MST = SST / DFT
+mst <- sst / dft
+```{r echo = FALSE}
+mst <- sst / dft
+mst
+```
+
+## F Statistic F = MSM/MSE
+f_score <- msm / mse
+```{r echo = FALSE}
+mse <- sse / dfe
+f_score <- msm / mse
+f_score
+```
+
+## Adjusted R Squared R2 = 1 - (1 - R2)(n - 1) / (n - p)
+adjusted_r_squared <- 1 - (1 - r_squared) * (n - 1) / (n - p)
+```{r echo = FALSE}
+adjusted_r_squared <- 1 - (1 - r_squared) * (n - 1) / (n - p)
+adjusted_r_squared
+```
+
+## Calculate the p-value from the F distribution
+p_value <- pf(f_score, dfm, dft, lower.tail=F)
+```{r echo = FALSE}
+p_value <- pf(f_score, dfm, dft, lower.tail=F)
+p_value
+```
